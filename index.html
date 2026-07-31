@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>For my baby dino 🦖</title>
+  
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600&family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- Background Continuous Emoji Layer -->
+  <div id="emojiBg"></div>
+
+  <!-- Audio Element -->
+  <audio id="bgMusic" src="music.mp3" loop></audio>
+
+  <!-- Centered Animated Volume Warning Badge -->
+  <div id="volumeWarning" class="volume-warning hidden">
+    <div class="volume-icon-wrapper">
+      <span class="speaker-icon">🔊</span>
+      <div class="volume-waves">
+        <span class="wave w1"></span>
+        <span class="wave w2"></span>
+        <span class="wave w3"></span>
+      </div>
+    </div>
+    <p>Turn up your volume for music 🎶</p>
+  </div>
+
+  <!-- Floating Audio Control -->
+  <button id="musicToggle" class="music-btn hidden" onclick="toggleMusic()">🎵 Pause Music</button>
+
+  <!-- SCREEN 1: Ready Prompt -->
+  <div id="promptScreen" class="screen">
+    <div class="prompt-card">
+      <div class="gift-icon-bounce">🎁</div>
+      <h1>Udah ready belommm</h1>
+      <div class="btn-group">
+        <button class="btn btn-yes" onclick="handleReady(true, event)">JALAN JALANNNN</button>
+        <button class="btn btn-no" onclick="handleReady(false, event)">No (hiks)</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- SCREEN 1B: Waiting Screen -->
+  <div id="waitScreen" class="screen hidden">
+    <div class="prompt-card">
+      <img src="cat-cute-gif-10.gif"" alt="catto" class="gif-image">
+      
+      <h1>ooo berani berani tekan no? >:(</h1>
+      <p class="wait-subtitle">ok no jk. i know kamu mesti sengaja hahagahgah. i love you, now go tekan button jalan jalan tu. i promise it's worth it <3</p>
+      
+      <button class="btn btn-yes" style="margin-top: 20px; width: 100%;" onclick="backToPrompt()">tekan cini yayang</button>
+    </div>
+  </div>
+
+  <!-- SCREEN 1C: Dynamic Typewriter Intro Splash -->
+  <div id="splashScreen" class="screen hidden">
+    <div class="splash-content">
+      <!-- Animated Title Header -->
+      <h1 id="splashTitle" class="splash-header-title"></h1>
+      
+      <!-- Animated Subtitle -->
+      <p id="splashSubtitle" class="splash-header-subtitle"></p>
+
+      <!-- Continue Button -->
+      <button id="splashContinueBtn" class="btn btn-yes hidden" onclick="transitionToDashboard()">Open Your Gifts ✨</button>
+    </div>
+  </div>
+
+  <!-- SCREEN 2: Main Dashboard -->
+  <div id="mainScreen" class="screen hidden">
+    
+    <header class="main-header">
+      <h1>Happy Girlfriend's Day, my baby! 💕</h1>
+      <p class="subtitle">Tap each surprise to open it up!</p>
+    </header>
+
+    <div class="dashboard">
+
+      <!-- FEATURE 1: Love Letter Module -->
+      <div class="module-card" id="letterModule">
+        <div class="module-header" onclick="toggleModule('letterModule')">
+          <div class="module-icon">💌</div>
+          <div class="module-info">
+            <h3>A Letter For You</h3>
+            <p>Tap to unfold</p>
+          </div>
+          <div class="chevron">❯</div>
+        </div>
+        
+        <div class="module-body">
+          <div class="inline-envelope-wrapper" onclick="openLetterModal()">
+            <div class="small-envelope">
+              <div class="small-flap"></div>
+              <div class="small-pocket"></div>
+            </div>
+            <p class="hint">Tap envelope to open 🍥</p>
+          </div>
+        </div>
+      </div> <!-- FIXED: Properly closed feature 1 div -->
+
+      <!-- FEATURE 2: Polaroid Photo Gallery Module -->
+      <div class="module-card" id="galleryModule">
+        <div class="module-header" onclick="toggleModule('galleryModule')">
+          <div class="module-icon">📸</div>
+          <div class="module-info">
+            <h3>Memory Vault</h3>
+            <p>Tap to open gallery</p>
+          </div>
+          <div class="chevron">❯</div>
+        </div>
+
+        <div class="module-body">
+          <div class="polaroid-blank-preview" onclick="openGalleryModal()">
+            <div class="polaroid-frame">
+              <div class="polaroid-photo-space">
+                <span>📷 Tap to View Photos</span>
+              </div>
+              <div class="polaroid-caption">Our Memories ❤️</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- RESTART BUTTON AT BOTTOM -->
+    <button class="restart-btn" onclick="restartExperience()">Go Back 🔄</button>
+
+    </div>
+
+  </div>
+
+  <!-- FULLSCREEN BLURRED LETTER MODAL -->
+  <div id="letterModal" class="modal-overlay hidden" onclick="closeLetterModal()">
+    <div class="letter-reveal-card" onclick="event.stopPropagation()">
+      
+      <!-- Zoomed-In Envelope -->
+      <div class="video-envelope" id="videoEnvelope" onclick="handleEnvelopeClick(event)">
+        <div class="video-flap"></div>
+        <div class="video-pocket"></div>
+        
+        <!-- Floating Hearts -->
+        <div class="video-hearts">
+          <div class="v-heart h1">❤️</div>
+          <div class="v-heart h2">💖</div>
+          <div class="v-heart h3">💕</div>
+        </div>
+
+        <!-- Letter Paper -->
+        <div class="video-letter" id="videoLetter" onclick="enlargeLetter(event)">
+          <p class="handwritten">
+            happy girlfriend's day, yayang.
+            <br><br>
+            honestly, saya taktahu macam mana nak start this letter because every time i try to put my feelings into words, it somehow never feels enough. 
+            like.. how could a few paragraphs explain how much i love someone?
+            <br><br>
+            first of all, i still can't believe that we are together HAHAHAHAH masa awal awal dulu saya cuma fikir, 
+            'try je la ngorat dulu. kalau sangkut, syukur. kalau tak, takpe. at least dah cuba then move on la' but then... YOU ACTUALLY LIKED ME BACK? 
+            sampai sekarang saya rasa macam.. wthelly, kamu saya punya?!?!
+            <br><br>
+            mula mula saya interested dengan your vibe. kamu send video mukbang kat saya masa tengah puasa. kejam sumpahhh 
+            then i realized that you're funny. then i realized that you're beautiful. then i realized.. oh naur, you're so my type. meninggal sayaaaa
+            <br><br>
+            thank you for choosing me every single day, yayang.
+            <br><br>
+            thank you sebab sabar dengan perangai saya yang kadang kadang susah nak faham. my mood swings, my overthinking, my needy ass, random merajuk, 
+            random clingy, sudden silent treatment, everything. i know it's not easy to deal with me, but somehow you still do. you never make me feel like 
+            i'm too much for you. instead, you make me feel loved even when i'm difficult to love.
+            <br><br>
+            saya nampak every effort kamu buat untuk saya. mungkin orang lain tak nampak, or just anggap tu benda biasa, but i notice the depth behind your actions.
+            <br><br>
+            saya tahu ada masa saya buat kamu nangis. and for that, i'm really sorry. every time it happens, hati saya pun sakit sekali. the last thing i ever want is 
+            to be the reason behind your tears. saya tak sempurna, saya banyak buat silap, but please know that every single day i'm trying to become someone who deserves you. 
+            sebab saya sayang kamu sangat sangat. saya taknak hilang kamu :(
+            <br><br>
+            i have so many flaws. so many that sometimes i even got tired of myself. but you, yayang.. you complete all the missing pieces in me. you make everything 
+            feel lighter. words honestly cannot describe how grateful i am to have you in my life. if i had to choose between loving you and breathing, 
+            i would use my last breath to tell you that i love you. poetic tak HAHAHAHAHHAHA ok saya serius balik
+            <br><br>
+            now let's talk about how ridiculously pretty you are!
+            <br><br>
+            your eyes... macam anak cina, but in the cutest way possible. i love your eyes so much, sebab apa? sebab i know you always see the good in people. your nose... 
+            MANCUNG ILERRR SAYA JELES GRR your cheeks... gahdamn saya geram sebab saya nak ciom manyak manyak tapi takut kamu rimas. your lips... they always melt me. every 
+            kisses with you feels like my heart knows exactly where it belongs. every single time.
+            <br><br>
+            okay fine kamu lagi tinggi, and honestly i don't mind pun. saya suka kamu lagi tinggi dari saya hihi oh saya suka pegang tangan kamu. it's one of my favourite places 
+            to be. get it? under your embrace, i mean :3
+            <br><br>
+            i especially love when we lock our arms together while walking. maybe to other people it's just a small thing. but to me, it makes me feel close to you. 
+            dalam dunia yang penuh dengan judgemental people, holding on to you reminds me that i'm safe. that i'm home. with you, yayang, i've never felt more secure :)
+            <br><br>
+            special mention to your peyut because you know i always bully it with kisses. and senanya kan, saya ada rahsia... which is...........
+            <br><br>
+            i love every little thing about you, yayang. eveeeerrryyyy. SEMUAAAAAAAA. one day i'll figure out how to inject myself inside your veins. eh anyways
+            <br><br>
+            but what makes me fall in love with you over and over again isn't just your looks, or your voice, or your laugh. it's the way you love me.
+            <br><br>
+            kamu buatkan saya maggi. <br>
+            kamu belanja saya mamam, belikan saya macam macam. <br>
+            bila saya penat, piyed, kamu jaga saya. <br>
+            you hold me so gently like i'm some diamond that needs to be protected. <br>
+            kamu bukakkan pintu untuk saya. <br>
+            kamu letakkan kasut saya dalam rak, keluarkan kasut untuk saya, susun elok elok kiri kanan. <br>
+            kamu lipatkan baju saya masa kita kemas kemas nak balik haritu. <br>
+            every meet kamu bagi hadiah untuk saya. <br>
+            tak kisah busy mana, penat mana, you always make time for me. <br>
+            kamu spend hours dalam bas semata mata nak jumpa saya. <br>
+            kamu kerja keras, ot setiap hari, sebab nak spoil saya. <br>
+            setiap malam tak pernah miss video call dengan saya. <br>
+            walaupun suka sakat saya sampai saya frust kenkadang, tapi senanya saya suka je hihihi
+            <br><br>
+            and thank you sebab selalu teman saya main game walaupun kenkadang saya noob sampai kita lose streak hiks
+            <br><br>
+            it's all these little things that make me realize that i'm being loved in so many different ways. more than i could ever ask for.
+            <br><br>
+            i'm writing this while listening to the song that's playing in the background rn. "Dito Sa Ilalim ng Buwan" by Arthur Nery. every lyric remids me of you. maybe 
+            because almost everything reminds me of you these days. a place, a smell, a song, food, jokes... i swear my brain is just a constant loop of you. it always find 
+            ways to associate everything with you. and i don't mind it at all. it makes me feel like you're always with me, even when you're not physically here.
+            <br><br>
+            saya nak kamu tahu benda ni, okay?
+            <br><br>
+            you're an amazing person.
+            <br><br>
+            not just because you're beautiful.
+            <br><br>
+            but because your heart is beautiful too, even when there are so many reason for it not to be.
+            <br><br>
+            you deserve to be loved loudly, gently, consistently and without doubts.
+            <br><br>
+            i hope i remind you every day that you're appreciated, valued, seen, and deeply loved.
+            <br><br>
+            through good days. <br>
+            through bad days. <br>
+            through random arguments. <br>
+            through random silences. <br>
+            through distance. <br>
+            through laughter. <br>
+            through everything.
+            <br><br>
+            i'll always be here.
+            <br><br>
+            i choose you today.<br>
+            i'll choose you tomorrow.<br>
+            and i'll keep choosing you for as long as time allows me to.
+            <br><br>
+            thank you for becoming one of the best things that has ever happened to me.
+            <br><br>
+            thank you for loving me sincerely.
+            <br><br>
+            i love you more than words will ever be able to express, yayang. and i hope this letter reminds you of that, even just a little bit.
+            <br><br>
+            happy girlfriend's day, my love, my baby, my cuckam, my dainoyorrrr, my yayang, my matcha latte.
+            <br><br><br>
+            Yours always,
+            <br>
+            Camelia <3
+          </p>
+        </div>
+      </div>
+
+      <!-- Action Button (Pinned Cleanly Below) -->
+      <button class="action-btn hidden" id="putAwayBtn" onclick="putLetterAway(event)">Put letter back 💌</button>
+      <p class="envelope-tap-hint" id="envelopeHint">Tap the envelope to open 💌</p>
+
+    </div>
+  </div>
+
+  <!-- FULLSCREEN CAROUSEL GALLERY MODAL -->
+  <div id="galleryModal" class="modal-overlay hidden" onclick="closeGalleryModal()">
+    <div class="carousel-modal-card" onclick="event.stopPropagation()">
+
+      <!-- Navigation Arrows -->
+      <button class="carousel-arrow prev" onclick="changeSlide(-1)">❮</button>
+      <button class="carousel-arrow next" onclick="changeSlide(1)">❯</button>
+
+      <!-- Slide Container -->
+      <div class="carousel-track" id="carouselTrack">
+
+        <!-- Slide 1 -->
+        <div class="carousel-slide">
+          <div class="card-container">
+            <div class="card" onclick="flipCard(this)">
+              <div class="card-front">
+                <img src="pic1.jpeg" alt="Memory 1">
+              </div>
+              <div class="card-back">
+                <p>our first meal together</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Slide 2 -->
+        <div class="carousel-slide">
+          <div class="card-container">
+            <div class="card" onclick="flipCard(this)">
+              <div class="card-front">
+                <img src="pic2.jpeg" alt="Memory 2">
+              </div>
+              <div class="card-back">
+                <p>you're the matcha to my coffee</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Slide 3 -->
+        <div class="carousel-slide">
+          <div class="card-container">
+            <div class="card" onclick="flipCard(this)">
+              <div class="card-front">
+                <img src="pic3.jpeg" alt="Memory 3">
+              </div>
+              <div class="card-back">
+                <p>the best sunset picture i've ever taken</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Slide 4 -->
+        <div class="carousel-slide">
+          <div class="card-container">
+            <div class="card" onclick="flipCard(this)">
+              <div class="card-front">
+                <img src="pic4.jpeg" alt="Memory 4">
+              </div>
+              <div class="card-back">
+                <p>our lego date while eating maggi hihi</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Slide 5 -->
+        <div class="carousel-slide">
+          <div class="card-container">
+            <div class="card" onclick="flipCard(this)">
+              <div class="card-front">
+                <img src="pic5.jpeg" alt="Memory 5">
+              </div>
+              <div class="card-back">
+                <p>the morning after... ahem</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Slide 6 -->
+        <div class="carousel-slide">
+          <div class="card-container">
+            <div class="card" onclick="flipCard(this)">
+              <div class="card-front">
+                <img src="pic6.jpeg" alt="Memory 6">
+              </div>
+              <div class="card-back">
+                <p>ibu tengok ni saya pegang duniaaaaa</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Slide 7 -->
+        <div class="carousel-slide">
+          <div class="card-container">
+            <div class="card" onclick="flipCard(this)">
+              <div class="card-front">
+                <img src="pic7.jpeg" alt="Memory 7">
+              </div>
+              <div class="card-back">
+                <p>you complete me in every possible way, yayang</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Slide 8 -->
+        <div class="carousel-slide">
+          <div class="card-container">
+            <div class="card" onclick="flipCard(this)">
+              <div class="card-front">
+                <img src="pic8.jpeg" alt="Memory 8">
+              </div>
+              <div class="card-back">
+                <p>ANYWAY SAYA MENANG MASA NI HAHAGAHHAGAGAHGAHAG</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Slide 9 -->
+        <div class="carousel-slide">
+          <div class="card-container">
+            <div class="card" onclick="flipCard(this)">
+              <div class="card-front">
+                <img src="pic9.jpeg" alt="Memory 9">
+              </div>
+              <div class="card-back">
+                <p>time ni tak sabar nak peyuk shiom kamu the next day</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Slide 10 -->
+        <div class="carousel-slide">
+          <div class="card-container">
+            <div class="card" onclick="flipCard(this)">
+              <div class="card-front">
+                <img src="pic10.jpeg" alt="Memory 10">
+              </div>
+              <div class="card-back">
+                <p>ada anomali menyelittttt</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Slide 11 -->
+        <div class="carousel-slide">
+          <div class="card-container">
+            <div class="card" onclick="flipCard(this)">
+              <div class="card-front">
+                <img src="pic11.jpeg" alt="Memory 11">
+              </div>
+              <div class="card-back">
+                <p>tetiba dah 3 months. cepat kan masa berlalu yayang?</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Slide 12 -->
+        <div class="carousel-slide">
+          <div class="card-container">
+            <div class="card" onclick="flipCard(this)">
+              <div class="card-front">
+                <img src="pic12.jpeg" alt="Memory 12">
+              </div>
+              <div class="card-back">
+                <p>i remember giggling when i first saw this pic. you're so cute</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Slide 13 -->
+        <div class="carousel-slide">
+          <div class="card-container">
+            <div class="card" onclick="flipCard(this)">
+              <div class="card-front">
+                <img src="pic13.jpeg" alt="Memory 13">
+              </div>
+              <div class="card-back">
+                <p>saya suka pegang tangan kamu. it fits mine just right</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Slide 14 -->
+        <div class="carousel-slide">
+          <div class="card-container">
+            <div class="card" onclick="flipCard(this)">
+              <div class="card-front">
+                <img src="pic14.jpeg" alt="Memory 14">
+              </div>
+              <div class="card-back">
+                <p>honorable mention: i remember feeling so miserable that week. being with you made me forget everything and i love it</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Slide 15 -->
+        <div class="carousel-slide">
+          <div class="card-container">
+            <div class="card" onclick="flipCard(this)">
+              <div class="card-front">
+                <img src="pic15.jpeg" alt="Memory 15">
+              </div>
+              <div class="card-back">
+                <p>and finally... this was me setting up this surprise for you. while you're sleeping agaga</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Image Counter Pill -->
+      <div class="image-counter" id="imageCounter">1 / 3</div>
+
+      <p class="carousel-hint">Tap arrows to navigate • Tap photo to flip ✨</p>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
